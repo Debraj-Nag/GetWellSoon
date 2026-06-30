@@ -29,24 +29,9 @@
             overflow-x: hidden;
         }
 
-        /* Audio Control Floating Button */
-        .audio-control {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: var(--b99-accent);
-            color: white;
-            border: 2px solid white;
-            padding: 10px 15px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
-        }
-
         .container {
             max-width: 800px;
-            margin: 40px auto 0 auto;
+            margin: 0 auto;
             background: var(--b99-blue);
             border: 5px solid var(--b99-yellow);
             border-radius: 15px;
@@ -193,54 +178,39 @@
             background: #ff5261;
         }
 
-        /* Page 2: The Final Order Screen Style */
-        #celebration-page {
-            display: none; /* Hidden by default */
-            max-width: 800px;
-            margin: 40px auto 0 auto;
-            background: var(--b99-blue);
-            border: 5px solid var(--b99-yellow);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.7);
-            animation: popIn 0.5s ease-out;
-        }
-
-        .order-text {
-            font-size: 3.5rem;
+        /* Captain Holt Order Page Styles */
+        .holt-caption {
+            font-size: 2.5rem;
             color: var(--b99-yellow);
-            text-shadow: 4px 4px 0px #000;
+            text-shadow: 3px 3px 0px #000;
+            margin-top: 25px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 25px;
+            letter-spacing: 1px;
             line-height: 1.2;
         }
 
-        .celebration-image {
+        .holt-img {
             max-width: 100%;
             height: auto;
             border: 6px solid var(--b99-yellow);
             border-radius: 10px;
-            box-shadow: 0px 8px 25px rgba(0,0,0,0.6);
-            margin-bottom: 25px;
+            box-shadow: 0px 5px 20px rgba(0,0,0,0.6);
+            margin-top: 20px;
         }
 
         .back-btn {
             background: transparent;
             color: var(--b99-light);
-            border: 2px dashed rgba(255,255,255,0.4);
-            box-shadow: none;
+            border: 2px solid var(--b99-light);
             font-size: 1rem;
             padding: 8px 16px;
+            margin-top: 30px;
+            box-shadow: none;
         }
+        
         .back-btn:hover {
-            background: rgba(255,255,255,0.1);
-            color: var(--b99-yellow);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.9); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            background: var(--b99-light);
+            color: var(--b99-dark);
         }
 
         /* Confetti Canvas */
@@ -257,13 +227,9 @@
 </head>
 <body>
 
-    <audio id="b99-theme" src="theme.mp3" loop></audio>
-
-    <button class="audio-control" onclick="toggleAudio()" id="audio-btn">🎵 Play Theme Music</button>
-
     <canvas id="confetti-canvas"></canvas>
 
-    <div id="main-dashboard" class="container">
+    <div id="main-view" class="container">
         <header>
             <h1>NINE-NINE!</h1>
             <div class="subtitle">Operation: Get Well Soon, Bestie!</div>
@@ -313,37 +279,21 @@
         <button class="nine-nine-btn" onclick="nineNineChant()">BATTLE CRY: NINE-NINE!</button>
     </div>
 
-
-    <div id="celebration-page">
-        <h1 class="order-text">GET WELL SOON, AND THATS AN ORDER!</h1>
+    <div id="holt-view" class="container" style="display: none;">
+        <header>
+            <h1>COMMANDING OFFICER'S DIRECTIVE</h1>
+        </header>
         
-        <img class="celebration-image" src="https://i.pinimg.com/originals/70/d4/b5/70d4b5aee2533de1a79f3866f24181df.jpg" alt="Brooklyn 99 Squad">
+        <img class="holt-img" src="https://assets.telegraphindia.com/telegraph/2023/Dec/1702544291_captain-holt2.jpg" alt="Captain Raymond Holt">
         
-        <div>
-            <button class="back-btn" onclick="returnToDashboard()">⬅ Return to Precinct</button>
+        <div class="holt-caption">
+            "GET WELL SOON, AND THATS AN ORDER!"
         </div>
+
+        <button class="back-btn" onclick="returnToPrecinct()">← Return to Precinct Dashboard</button>
     </div>
 
-
     <script>
-        // Audio Control Logic
-        const audio = document.getElementById('b99-theme');
-        const audioBtn = document.getElementById('audio-btn');
-
-        function toggleAudio() {
-            if (audio.paused) {
-                audio.play().catch(error => {
-                    console.log("Audio playback failed. Ensure theme.mp3 is in the same folder.");
-                });
-                audioBtn.innerHTML = "⏸️ Pause Theme Music";
-                audioBtn.style.background = "#2a9d8f"; 
-            } else {
-                audio.pause();
-                audioBtn.innerHTML = "🎵 Play Theme Music";
-                audioBtn.style.background = "var(--b99-accent)";
-            }
-        }
-
         // 1. Title of your sex tape joke
         let jokeClicked = false;
         function triggerSexTapeJoke() {
@@ -384,12 +334,13 @@
                     alert("TERRY IS AT MAXIMUM POWER! YOUR IMMUNE SYSTEM IS NOW UNSTOPPABLE!");
                 }
             } else {
+                // Reset if they want to keep clicking
                 yogurtCount = 0;
                 bar.style.width = '0%';
             }
         }
 
-        // Checklist Progress Feedback
+        // Checklist Progress Feedback (Just an easter egg)
         function updateProgress() {
             const checkboxes = document.querySelectorAll('.checklist-item input');
             const checkedCount = Array.from(checkboxes).filter(c => c.checked).length;
@@ -399,7 +350,7 @@
             }
         }
 
-        // 4. Confetti Animation Engine
+        // 4. Confetti Animation Engine (Pure JS Canvas)
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let confetti = [];
@@ -463,29 +414,29 @@
             animationFrame = requestAnimationFrame(animateConfetti);
         }
 
-        // TRIGGER THE PAGE CHANGE & CONFETTI HYPE
+        // Modified Battle Cry Function to switch views
         function nineNineChant() {
-            // Hide dashboard & Show Order Page
-            document.getElementById('main-dashboard').style.display = 'none';
-            document.getElementById('celebration-page').style.display = 'block';
+            // Hide dashboard, show Holt directive view
+            document.getElementById('main-view').style.display = 'none';
+            document.getElementById('holt-view').style.display = 'block';
 
-            // Fire off the confetti
+            // Trigger animations
             createConfetti();
             cancelAnimationFrame(animationFrame);
             animateConfetti();
             
-            // Keep confetti running for 6 seconds on the final page
+            // Stop confetti after 4 seconds to preserve browser memory
             setTimeout(() => {
                 cancelAnimationFrame(animationFrame);
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 confetti = [];
-            }, 6000);
+            }, 4000);
         }
 
-        // Return button function
-        function returnToDashboard() {
-            document.getElementById('celebration-page').style.display = 'none';
-            document.getElementById('main-dashboard').style.display = 'block';
+        // Function to revert views back to the main dashboard
+        function returnToPrecinct() {
+            document.getElementById('holt-view').style.display = 'none';
+            document.getElementById('main-view').style.display = 'block';
             cancelAnimationFrame(animationFrame);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             confetti = [];
